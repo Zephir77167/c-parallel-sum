@@ -1,51 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
-#include <sys/time.h>
+#include "../utils/arrays.h"
+#include "../utils/timers.h"
 
-#define ARRAY_SIZE 2000000000
-
-static long long reduce(int* array) {
+static long long reduce(int* array, int size) {
   long long result = 0;
 
-  for (int i = 0; i < ARRAY_SIZE; i += 1) {
+  for (int i = 0; i < size; i += 1) {
     result += array[i];
   }
 
   return result;
 }
 
-void clean_array(int* array) {
-  free(array);
-}
-
-static int* generate_array() {
-  int* array = malloc(sizeof(int) * ARRAY_SIZE);
-
-  srand(20172017);
-  for (int i = 0; i < ARRAY_SIZE; i += 1) {
-    array[i] = rand();
+int main(int argc, char** argv) {
+  if (argc != 2) {
+    printf("Usage: ./c_parallel_sum_sequential array_size\n");
+    exit(1);
   }
 
-  return array;
-}
+  int array_size = atoi(argv[1]);
 
-int main() {
-  struct timespec start, end;
+  if (array_size <= 0 || array_size > 2000000000) {
+    printf("array_size should be between 1 and 2000000000 included\n");
+    exit(1);
+  }
 
-  printf("Generating array of size %d... ", ARRAY_SIZE);
+  printf("Generating array of size %d... ", array_size);
   fflush(stdout);
-  int* array = generate_array();
+  int* array = generate_array(array_size);
   printf("Done!\n");
 
   printf("Reducing array... ");
   fflush(stdout);
-  clock_gettime(CLOCK_MONOTONIC, &start);
-  long long result = reduce(array);
-  clock_gettime(CLOCK_MONOTONIC, &end);
+  start_timer();
+  long long result = reduce(array, array_size);
+  stop_timer();
   printf("Done!\n");
-  time_t delta_us = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_nsec - start.tv_nsec) / 1000;
-  printf("Time took to reduce array: %lums\n", delta_us / 1000);
+  printf("Time took to reduce array: %lums\n", get_ellapsed_time_ms());
   printf("Result: %lld\n", result);
 
   clean_array(array);
