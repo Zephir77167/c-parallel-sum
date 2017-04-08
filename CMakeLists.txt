@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(c_parallel_sum)
 
 set(CMAKE_C_STANDARD 99)
-set(COMMON_C_FLAGS "-ansi -pedantic -Wall -Werror")
-
+set(COMMON_C_FLAGS "-ansi -pedantic -Wall -Werror -O3 -march=native")
 
 set(CMAKE_C_FLAGS COMMON_C_FLAGS)
 set(SOURCE_FILES_SEQUENTIAL sequential/main.c utils/arrays.c utils/timers.c)

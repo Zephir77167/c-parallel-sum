@@ -15,7 +15,7 @@ static long long reduce(int* array, int size) {
 
 int main(int argc, char** argv) {
   if (argc != 2) {
-    printf("Usage: ./c_parallel_sum_sequential array_size\n");
+    printf("Usage: %s array_size\n", argv[0]);
     exit(1);
   }
 
