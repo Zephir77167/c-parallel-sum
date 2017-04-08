@@ -11,8 +11,9 @@ int* generate_array(int size) {
   return array;
 }
 
-void clean_array(int* array) {
-  if (array != NULL) {
-    free(array);
+void clean_array(int** array) {
+  if (*array != NULL) {
+    free(*array);
+    *array = NULL;
   }
 }

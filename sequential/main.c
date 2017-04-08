@@ -40,6 +40,6 @@ int main(int argc, char** argv) {
   printf("Time took to reduce array: %lums\n", get_ellapsed_time_ms());
   printf("Result: %lld\n", result);
 
-  clean_array(array);
+  clean_array(&array);
   return 0;
 }
