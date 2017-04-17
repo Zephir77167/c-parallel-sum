@@ -4,9 +4,9 @@
 #include "../utils/timers.h"
 
 static long long reduce(int* array, int size) {
-  long long result = 0;
+  long long result = array[0];
 
-  for (int i = 0; i < size; i += 1) {
+  for (int i = 1; i < size; i += 1) {
     result += array[i];
   }
 
