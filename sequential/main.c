@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include "../utils/args.h"
 #include "../utils/arrays.h"
 #include "../utils/timers.h"
 
@@ -14,22 +14,8 @@ static long long reduce(int* array, int size) {
 }
 
 int main(int argc, char** argv) {
-  if (argc != 2) {
-    printf("Usage: %s array_size\n", argv[0]);
-    exit(1);
-  }
-
-  int array_size = atoi(argv[1]);
-
-  if (array_size <= 0 || array_size > 2000000000) {
-    printf("array_size should be between 1 and 2000000000 included\n");
-    exit(1);
-  }
-
-  printf("Generating array of size %d... ", array_size);
-  fflush(stdout);
+  int array_size = get_array_size_from_args(argc, argv);
   int* array = generate_array(array_size);
-  printf("Done!\n");
 
   printf("Reducing array... ");
   fflush(stdout);
