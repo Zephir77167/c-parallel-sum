@@ -12,10 +12,10 @@ set(CMAKE_C_FLAGS COMMON_C_FLAGS)
 set(SOURCE_FILES_SEQUENTIAL ${COMMON_UTILS_SOURCES} sequential/main.c)
 add_executable(c_parallel_sum_sequential ${SOURCE_FILES_SEQUENTIAL})
 
-set(CMAKE_C_FLAGS "-fopenmp ${COMMON_C_FLAGS}")
-set(SOURCE_FILES_OPEN_MP ${COMMON_UTILS_SOURCES} open-mp/main.c)
-add_executable(c_parallel_sum_open_mp ${SOURCE_FILES_OPEN_MP})
-
-set(CMAKE_C_FLAGS "-lOpenCL ${COMMON_C_FLAGS}")
+set(CMAKE_C_FLAGS "${COMMON_C_FLAGS} -lOpenCL")
 set(SOURCE_FILES_OPEN_CL ${COMMON_UTILS_SOURCES} open-cl/main.c)
 add_executable(c_parallel_sum_open_cl ${SOURCE_FILES_OPEN_CL})
+
+set(CMAKE_C_FLAGS "${COMMON_C_FLAGS} -fopenmp")
+set(SOURCE_FILES_OPEN_MP ${COMMON_UTILS_SOURCES} open-mp/main.c)
+add_executable(c_parallel_sum_open_mp ${SOURCE_FILES_OPEN_MP})
