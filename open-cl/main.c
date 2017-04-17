@@ -3,6 +3,12 @@
 #include "../utils/arrays.h"
 #include "../utils/timers.h"
 
+#ifdef __APPLE__
+#include <OpenCL/opencl.h>
+#else
+#include <CL/cl.h>
+#endif
+
 static long long reduce(int* array, int size) {
   long long result = 0;
 
