@@ -34,7 +34,7 @@ static long long reduce(int* array, int size) {
   int i;
 
   FILE* fp;
-  char file_name[] = "./my_kernel.cl";
+  char file_name[] = "open-cl/my_kernel.cl";
   char* source_str;
   size_t source_size;
 
