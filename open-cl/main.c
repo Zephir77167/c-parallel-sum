@@ -64,7 +64,7 @@ static long long reduce(int* array, int size) {
 
   context = clCreateContext(properties, 1, &device_id, NULL, NULL, &err);
 
-  command_queue = clCreateCommandQueue(context, device_id, 0, &err);
+  command_queue = clCreateCommandQueueWithProperties(context, device_id, (cl_queue_properties*)properties, &err);
 
   program = clCreateProgramWithSource(context, 1, (const char**)&source_str, (const size_t*)&source_size, &err);
 
