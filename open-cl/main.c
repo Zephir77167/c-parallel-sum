@@ -9,6 +9,9 @@
 #include <CL/cl.h>
 #endif
 
+#define USE_GPU 0
+#define DEVICE_TYPE (USE_GPU == 1 ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU)
+
 #define DATA_SIZE 10
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -53,7 +56,7 @@ static long long reduce(int* array, int size) {
     exit(1);
   }
 
-  if (clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_GPU, 1, &device_id, &num_of_devices) != CL_SUCCESS) {
+  if (clGetDeviceIDs(platform_id, DEVICE_TYPE, 1, &device_id, &num_of_devices) != CL_SUCCESS) {
     fprintf(stderr, "Unable to get device id.\n");
     exit(1);
   }
@@ -63,12 +66,56 @@ static long long reduce(int* array, int size) {
   properties[2] = 0;
 
   context = clCreateContext(properties, 1, &device_id, NULL, NULL, &err);
+  if (err != 0) {
+    fprintf(stderr, "Unable to create context (error: %d).\n", err);
+    exit(1);
+  }
 
-  command_queue = clCreateCommandQueueWithProperties(context, device_id, (cl_queue_properties*)properties, &err);
+  command_queue = clCreateCommandQueueWithProperties(context, device_id, 0, &err);
+  if (err != 0) {
+    fprintf(stderr, "Unable to create command queue (error: %d).\n", err);
+    exit(1);
+  }
 
   program = clCreateProgramWithSource(context, 1, (const char**)&source_str, (const size_t*)&source_size, &err);
+  if (err != 0) {
+    fprintf(stderr, "Unable to create program (error: %d).\n", err);
+    exit(1);
+  }
 
-  if (clBuildProgram(program, 0, NULL, NULL, NULL, NULL) != CL_SUCCESS) {
+  err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+  printf("%d\n", err);
+
+  if (err != CL_SUCCESS) {
+    char *buff_erro;
+    cl_int errcode;
+    size_t build_log_len;
+    errcode = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &build_log_len);
+    if (errcode) {
+      printf("clGetProgramBuildInfo failed at line %d\n", __LINE__);
+      exit(-1);
+    }
+
+    buff_erro = malloc(build_log_len);
+    if (!buff_erro) {
+      printf("malloc failed at line %d\n", __LINE__);
+      exit(-2);
+    }
+
+    errcode = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, build_log_len, buff_erro, NULL);
+    if (errcode) {
+      printf("clGetProgramBuildInfo failed at line %d\n", __LINE__);
+      exit(-3);
+    }
+
+    fprintf(stderr,"Build log: \n%s\n", buff_erro); //Be careful with  the fprint
+    free(buff_erro);
+    fprintf(stderr,"clBuildProgram failed\n");
+    exit(EXIT_FAILURE);
+  }
+
+
+  if (err != CL_SUCCESS) {
     fprintf(stderr, "Error building program.\n");
     exit(1);
   }

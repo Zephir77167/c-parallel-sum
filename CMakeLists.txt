@@ -12,7 +12,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
 set(SOURCE_FILES_OPEN_MP ${COMMON_UTILS_SOURCES} open-mp/main.c)
 add_executable(c_parallel_sum_open_mp ${SOURCE_FILES_OPEN_MP})
 
-set(OpenCL_LIBRARY OpenCL)
 find_package(OpenCL REQUIRED)
 link_directories(${OpenCL_LIBRARY})
 
